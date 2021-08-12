@@ -10,3 +10,6 @@ text = "Why not try something new today? Explore the #PanamaPapers data set with
        "Easy to get started with, friendly step-by-step guide, all free and no download required! #Neo4j #learning @fulanito"
 
 print(patterns(text))
+
+result = text.split(' ')
+len(result)
