@@ -14,6 +14,28 @@ class TextProcessing(object):
 
     def __init__(self, lang: str = 'es'):
         self.lang = lang
+        self.nlp = TextProcessing.load_spacy(lang=lang)
+
+    @staticmethod
+    def load_spacy(lang: str):
+        result = None
+        try:
+            if lang == 'es':
+                result = spacy.load('es_core_news_sm')
+            else:
+                result = spacy.load('en_core_web_sm')
+            print('Language: {0}\n{1}: {2}'.format(TextProcessing.name, lang, result.pipe_names))
+        except Exception as e:
+            print('Error load_sapcy: {0}'.format(e))
+        return result
+
+    def analysis_pipe(self, text: str):
+        doc = None
+        try:
+            doc = self.nlp(text=text)
+        except Exception as e:
+            print('Error analysis_pipe: {0}'.format(e))
+        return doc
 
     @staticmethod
     def proper_encoding(text: str):
@@ -98,4 +120,21 @@ class TextProcessing(object):
             result = [' '.join(grams) for grams in n_grams]
         except Exception as e:
             print('Error make_ngrams: {0}'.format(e))
+        return result
+
+    @staticmethod
+    def tagger(text: str):
+        result = None
+        try:
+            list_tagger = []
+            doc = TextProcessing.analysis_pipe(text=text)
+            for token in doc:
+                item = {'text': token.text, 'lemma': token.lemma_, 'stem': token._.stem, 'pos': token.pos_,
+                        'tag': token.tag_, 'dep': token.dep_, 'shape': token.shape_, 'is_alpha': token.is_alpha,
+                        'is_stop': token.is_stop, 'is_digit': token.is_digit, 'is_punct': token.is_punct,
+                        'syllables': token._.syllables}
+                list_tagger.append(item)
+            result = list_tagger
+        except Exception as e:
+            print('Error tagger: {0}'.format(e))
         return result
